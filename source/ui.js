@@ -171,9 +171,12 @@ if (typeof jQuery !== 'undefined') {
                 /*
                  * Sound
                  */
-                self.dynamicaudio = new DynamicAudio({
-                    swf: nes.opts.swfPath+'dynamicaudio.swf'
-                });
+
+                if (!WebAudio || !WebAudio.audioContext) {
+                    self.dynamicaudio = new DynamicAudio({
+                        swf: nes.opts.swfPath+'dynamicaudio.swf'
+                    });
+                }
             };
         
             UI.prototype = {    
@@ -265,6 +268,9 @@ if (typeof jQuery !== 'undefined') {
                 },
             
                 writeAudio: function(samples) {
+                    if (WebAudio && WebAudio.audioContext) {
+                        return WebAudio.writeInt(samples);
+                    }
                     return this.dynamicaudio.writeInt(samples);
                 },
             
